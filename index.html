@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Мой прогресс ПДД</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚗</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <div class="top">
+      <div><h1>Мой прогресс ПДД</h1><p>Впиши результат после каждого теста</p></div>
+      <button class="icon" id="theme" aria-label="Сменить тему">🌓</button>
+    </div>
+    <div class="main">
+      <div class="ring">
+        <svg viewBox="0 0 120 120" aria-hidden="true"><circle class="bg" cx="60" cy="60" r="52"/><circle class="fg" id="ringFg" cx="60" cy="60" r="52"/></svg>
+        <div class="num"><b id="pctAll">0%</b><span>освоено</span></div>
+      </div>
+      <div class="side">
+        <p class="sub" id="subAll"></p>
+        <div class="stats">
+          <div><b id="stAvg">—</b><span>средний результат</span></div>
+          <div><b id="stAtt">0</b><span>попыток</span></div>
+          <div><b id="stDays">0</b><span>дней подряд</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="lane" aria-hidden="true"><i id="laneFill"></i><em id="laneCar">🚗</em><u>🏁</u></div>
+    <div class="exam"><label>Дата экзамена <input type="date" id="examDate"></label><span id="examLeft"></span></div>
+  </header>
+
+  <section class="weak" id="weak" hidden>
+    <h2>Что повторить сегодня</h2>
+    <div id="weakList"></div>
+  </section>
+
+  <div class="tools">
+    <input type="search" id="q" placeholder="Найти категорию или номер" aria-label="Поиск">
+  </div>
+  <div class="tabs" id="tabs"></div>
+  <main id="groups"></main>
+
+  <footer class="foot">
+    <label>Цель, % <input type="number" id="target" min="50" max="100"></label>
+    <span><button class="btn ghost" id="exp">Скопировать данные</button> <button class="btn ghost" id="reset">Сбросить всё</button></span>
+  </footer>
+</div>
+<div class="toast" id="toast" role="status"></div>
+<script src="app.js"></script>
+</body>
+</html>
