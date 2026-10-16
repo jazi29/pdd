@@ -1,872 +1,168 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="ПДД">
-    <meta name="theme-color" content="#0b5fa5">
-    <title>ПДД Прогресс</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚗</text></svg>">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
-    <style>
-    :root {
-        --bg: #f2f5f9;
-        --card: #fff;
-        --ink: #121c29;
-        --mute: #6b7787;
-        --line: #e4e9f0;
-        --blue: #0b5fa5;
-        --blue-s: #e5f0fb;
-        --yel: #f6b800;
-        --grn: #16a05a;
-        --grn-s: #e0f6ea;
-        --org: #e07b24;
-        --org-s: #fdeedd;
-        --h1: #14253a;
-        --h2: #0b5fa5;
-        --bar: rgba(255, 255, 255, .9);
-        --sh: 0 4px 16px rgba(18, 28, 41, .07);
-        color-scheme: light
-    }
-
-    @media (prefers-color-scheme: dark) {
-        :root:not([data-theme="light"]) {
-            --bg: #0d1218;
-            --card: #171f29;
-            --ink: #edf1f5;
-            --mute: #92a0b0;
-            --line: #26303c;
-            --blue: #58a8ef;
-            --blue-s: #1a2d42;
-            --grn: #41c47b;
-            --grn-s: #15301f;
-            --org: #f2a35e;
-            --org-s: #34251a;
-            --h1: #0a1018;
-            --h2: #123b63;
-            --bar: rgba(23, 31, 41, .92);
-            --sh: none;
-            color-scheme: dark
-        }
-    }
-
-    :root[data-theme="dark"] {
-        --bg: #0d1218;
-        --card: #171f29;
-        --ink: #edf1f5;
-        --mute: #92a0b0;
-        --line: #26303c;
-        --blue: #58a8ef;
-        --blue-s: #1a2d42;
-        --grn: #41c47b;
-        --grn-s: #15301f;
-        --org: #f2a35e;
-        --org-s: #34251a;
-        --h1: #0a1018;
-        --h2: #123b63;
-        --bar: rgba(23, 31, 41, .92);
-        --sh: none;
-        color-scheme: dark
-    }
-
-    * {
-        box-sizing: border-box;
-        -webkit-tap-highlight-color: transparent
-    }
-
-    html {
-        height: 100%;
-        scroll-padding-top: env(safe-area-inset-top, 0px)
-    }
-
-    body {
-        margin: 0;
-        min-height: 100%;
-        background: var(--bg);
-        color: var(--ink);
-        font: 400 16px/1.45 Roboto, system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
-        -webkit-user-select: none;
-        user-select: none;
-        overscroll-behavior-y: none
-    }
-
-    button {
-        font: inherit;
-        color: inherit;
-        cursor: pointer;
-        border: 0;
-        background: none
-    }
-
-    :focus-visible {
-        outline: 3px solid var(--yel);
-        outline-offset: 2px
-    }
-
-    .app {
-        max-width: 560px;
-        margin: 0 auto;
-        min-height: 100vh;
-        padding-bottom: calc(84px + env(safe-area-inset-bottom, 0px))
-    }
-
-    .screen {
-        display:none
-    }
-
-    .screen.on {
-        display: block;
-        animation: fade .25s
-    }
-
-    @keyframes fade {
-        from {
-            opacity: 0;
-            transform:translateY(6px)
-        }
-
-        to {
-            opacity: 1;
-            transform: none
-        }
-    }
-
-    .hero {
-        background: linear-gradient(160deg, var(--h1), var(--h2));
-        color: #fff;
-        padding: calc(18px + env(safe-area-inset-top, 0px)) 18px 26px;
-        border-radius: 0 0 30px 30px
-    }
-
-    .hrow {
-        display: flex;
-        justify-content: space-between;
-        align-items: center
-    }
-
-    .hero h1 {
-        margin: 0;
-        font-size: 22px;
-        font-weight:900
-    }
-
-    .hero small {
-        color: #c4d3e3;
-        font-size: 14px
-    }
-
-    .ring {
-        position: relative;
-        width: 170px;
-        height: 170px;
-        margin: 18px auto 6px
-    }
-
-    .ring svg {
-        width: 100%;
-        height: 100%;
-        transform: rotate(-90deg)
-    }
-
-    .ring circle {
-        fill: none;
-        stroke-width: 11;
-        stroke-linecap: round
-    }
-
-    .ring .bg {
-        stroke: rgba(255, 255, 255, .18)
-    }
-
-    .ring .fg {
-        stroke: var(--yel);
-        stroke-dasharray: 326.7;
-        stroke-dashoffset: 326.7;
-        transition: stroke-dashoffset 1s cubic-bezier(.2, .8, .2, 1)
-    }
-
-    .ring .n {
-        position: absolute;
-        inset: 0;
-        display: grid;
-        place-content: center;
-        text-align: center
-    }
-
-    .ring b {
-        font-size: 44px;
-        font-weight: 900;
-        line-height:1
-    }
-
-    .ring span {
-        font-size: 13px;
-        color: #c4d3e3;
-        margin-top: 4px
-    }
-
-    .sub {
-        text-align: center;
-        margin: 0;
-        color: #e6eef7;
-        font-size: 15px
-    }
-
-    .pill {
-        display: inline-flex;
-        gap: 6px;
-        align-items: center;
-        background: rgba(255, 255, 255, .16);
-        padding: 6px 12px;
-        border-radius: 99px;
-        font-size: 13px;
-        font-weight: 500
-    }
-
-    .pills {
-        display: flex;
-        gap: 8px;
-        justify-content: center;
-        margin-top: 14px;
-        flex-wrap: wrap
-    }
-
-    .pad {
-        padding: 16px 16px 0
-    }
-
-    .kpis {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 10px;
-        margin-top: -34px;
-        padding: 0 16px;
-        position: relative
-    }
-
-    .kpi {
-        background: var(--card);
-        border-radius: 18px;
-        padding: 12px;
-        box-shadow: var(--sh);
-        text-align: center
-    }
-
-    .kpi b {
-        display: block;
-        font-size: 22px;
-        font-weight:900
-    }
-
-    .kpi span {
-        font-size: 12px;
-        color: var(--mute)
-    }
-
-    h2 {
-        font-size: 18px;
-        font-weight: 700;
-        margin: 22px 0 10px
-    }
-
-    .card {
-        background: var(--card);
-        border-radius: 20px;
-        box-shadow: var(--sh);
-        overflow: hidden
-    }
-
-    .row {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        width: 100%;
-        padding: 13px 14px;
-        text-align: left;
-        border-top: 1px solid var(--line)
-    }
-
-    .row:first-child {
-        border-top: 0
-    }
-
-    .row:active {
-        background: var(--blue-s)
-    }
-
-    .no {
-        flex: none;
-        width: 38px;
-        height: 38px;
-        border-radius: 12px;
-        background: var(--blue-s);
-        color: var(--blue);
-        display: grid;
-        place-items: center;
-        font-weight: 700;
-        font-size: 14px
-    }
-
-    .done .no {
-        background: var(--grn-s);
-        color:var(--grn)
-    }
-
-    .prog .no {
-        background: var(--org-s);
-        color: var(--org)
-    }
-
-    .tx {
-        flex: 1;
-        min-width:0
-    }
-
-    .tx b {
-        display: block;
-        font-weight: 500;
-        font-size: 15px;
-        line-height:1.3
-    }
-
-    .tx small {
-        color: var(--mute);
-        font-size: 12.5px
-    }
-
-    .pc {
-        flex: none;
-        font-weight: 900;
-        font-size: 16px;
-        color:var(--mute)
-    }
-
-    .done .pc {
-        color:var(--grn)
-    }
-
-    .prog .pc {
-        color: var(--org)
-    }
-
-    .mini {
-        height: 4px;
-        background:var(--line)
-    }
-
-    .mini i {
-        display: block;
-        height: 100%;
-        background: var(--org);
-        border-radius:4px
-    }
-
-    .done .mini i {
-        background: var(--grn)
-    }
-
-    .empty {
-        padding: 22px;
-        text-align: center;
-        color: var(--mute);
-        font-size: 14px
-    }
-
-    .search {
-        position: sticky;
-        top: 0;
-        z-index: 5;
-        background: var(--bg);
-        padding: calc(14px + env(safe-area-inset-top, 0px)) 16px 8px
-    }
-
-    .search h1 {
-        margin: 0 0 10px;
-        font-size: 26px;
-        font-weight: 900
-    }
-
-    .search input {
-        width: 100%;
-        padding: 13px 16px;
-        border-radius: 14px;
-        border: 1px solid var(--line);
-        background: var(--card);
-        color: var(--ink);
-        font: inherit;
-        font-size: 16px;
-        -webkit-user-select: text;
-        user-select: text
-    }
-
-    .chips {
-        display: flex;
-        gap: 8px;
-        overflow-x: auto;
-        padding-top: 10px;
-        scrollbar-width:none
-    }
-
-    .chips::-webkit-scrollbar {
-        display: none
-    }
-
-    .chip {
-        flex: none;
-        padding: 8px 14px;
-        border-radius: 99px;
-        background: var(--card);
-        border: 1px solid var(--line);
-        font-size: 14px
-    }
-
-    .chip[aria-pressed=true] {
-        background: var(--blue);
-        border-color: var(--blue);
-        color: #fff
-    }
-
-    .gt {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin: 20px 4px 8px;
-        font-weight: 700;
-        font-size: 16px
-    }
-
-    .gt small {
-        color: var(--mute);
-        font-weight: 400
-    }
-
-    .week {
-        display: flex;
-        gap: 8px;
-        align-items: flex-end;
-        height: 120px;
-        padding: 14px
-    }
-
-    .col {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: flex-end;
-        height: 100%;
-        gap: 4px;
-        font-size: 12px;
-        color: var(--mute)
-    }
-
-    .col i {
-        width: 100%;
-        max-width: 30px;
-        border-radius: 8px 8px 4px 4px;
-        background: var(--blue);
-        min-height: 4px
-    }
-
-    .col.z i {
-        background: var(--line)
-    }
-
-    .set {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 14px;
-        border-top: 1px solid var(--line);
-        gap: 12px
-    }
-
-    .set:first-child {
-        border-top: 0
-    }
-
-    .set input[type=number], .set input[type=date] {
-        padding: 9px 10px;
-        border-radius: 10px;
-        border: 1px solid var(--line);
-        background: var(--bg);
-        color: var(--ink);
-        font: inherit;
-        font-size: 16px;
-        width: 130px;
-        -webkit-user-select: text;
-        user-select: text
-    }
-
-    .set input[type=number] {
-        width: 80px;
-        text-align: center
-    }
-
-    .btn {
-        padding: 14px 18px;
-        border-radius: 14px;
-        background: var(--blue);
-        color: #fff;
-        font-weight: 700;
-        width: 100%;
-        font-size: 16px
-    }
-
-    .ghost {
-        background: var(--blue-s);
-        color: var(--blue);
-        padding: 9px 14px;
-        border-radius: 12px;
-        font-weight: 500;
-        font-size: 14px;
-        width: auto
-    }
-
-    .danger {
-        color: #d33;
-        background: #d3333314
-    }
-
-    .tabbar {
-        position: fixed;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        z-index: 20;
-        background: var(--bar);
-        backdrop-filter: blur(14px);
-        -webkit-backdrop-filter: blur(14px);
-        border-top: 1px solid var(--line);
-        padding: 6px 10px calc(6px + env(safe-area-inset-bottom, 0px))
-    }
-
-    .tabs {
-        max-width: 560px;
-        margin: 0 auto;
-        display: flex
-    }
-
-    .tb {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 2px;
-        padding: 6px 0;
-        font-size: 12px;
-        color: var(--mute);
-        border-radius: 12px
-    }
-
-    .tb span {
-        font-size: 22px;
-        line-height: 1;
-        filter: grayscale(1);
-        opacity: .7;
-        transition: .2s
-    }
-
-    .tb[aria-selected=true] {
-        color: var(--blue);
-        font-weight:700
-    }
-
-    .tb[aria-selected=true] span {
-        filter: none;
-        opacity: 1;
-        transform: translateY(-2px) scale(1.12)
-    }
-
-    .ov {
-        position: fixed;
-        inset: 0;
-        background: rgba(5, 10, 16, .5);
-        opacity: 0;
-        pointer-events: none;
-        transition: .25s;
-        z-index: 30
-    }
-
-    .ov.on {
-        opacity: 1;
-        pointer-events: auto
-    }
-
-    .sheet {
-        position: fixed;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        z-index: 31;
-        background: var(--card);
-        border-radius: 28px 28px 0 0;
-        padding: 10px 18px calc(18px + env(safe-area-inset-bottom, 0px));
-        max-width: 560px;
-        margin: 0 auto;
-        transform: translateY(105%);
-        transition: transform .3s cubic-bezier(.2, .8, .2, 1);
-        max-height: 88vh;
-        overflow-y: auto
-    }
-
-    .sheet.on {
-        transform: none
-    }
-
-    .grab {
-        width: 42px;
-        height: 5px;
-        border-radius: 9px;
-        background: var(--line);
-        margin: 0 auto 14px;
-        display: block;
-        padding: 0
-    }
-
-    .sheet h3 {
-        margin: 0 0 2px;
-        font-size: 18px;
-        font-weight: 700;
-        line-height:1.3
-    }
-
-    .sheet p {
-        margin: 0;
-        color: var(--mute);
-        font-size: 14px
-    }
-
-    .step {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 18px;
-        margin: 18px 0 8px
-    }
-
-    .step button {
-        width: 56px;
-        height: 56px;
-        border-radius: 50%;
-        background: var(--blue-s);
-        color: var(--blue);
-        font-size: 28px;
-        font-weight: 700
-    }
-
-    .step input {
-        width: 110px;
-        text-align: center;
-        font-size: 44px;
-        font-weight: 900;
-        border: 0;
-        background: none;
-        color: var(--ink);
-        font-family: inherit;
-        -webkit-user-select: text;
-        user-select: text
-    }
-
-    .live {
-        text-align: center;
-        font-size: 15px;
-        font-weight: 700;
-        margin-bottom: 12px;
-        color:var(--org)
-    }
-
-    .live.ok {
-        color: var(--grn)
-    }
-
-    .qk {
-        display: flex;
-        gap: 8px;
-        justify-content: center;
-        margin-bottom: 16px;
-        flex-wrap: wrap
-    }
-
-    .hist {
-        list-style: none;
-        margin: 14px 0 0;
-        padding: 0;
-        font-size: 14px;
-        color: var(--mute)
-    }
-
-    .hist li {
-        display: flex;
-        justify-content: space-between;
-        padding: 7px 0;
-        border-bottom:1px dashed var(--line)
-    }
-
-    .hist b {
-        color: var(--ink)
-    }
-
-    .toast {
-        position: fixed;
-        left: 50%;
-        bottom: calc(92px + env(safe-area-inset-bottom, 0px));
-        transform: translate(-50%, 20px);
-        background: var(--ink);
-        color: var(--bg);
-        padding: 11px 18px;
-        border-radius: 99px;
-        font-size: 14px;
-        opacity: 0;
-        pointer-events: none;
-        transition: .3s;
-        z-index: 40;
-        max-width: 90vw;
-        text-align: center
-    }
-
-    .toast.on {
-        opacity: 1;
-        transform: translate(-50%, 0)
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-        * {
-            transition: none !important;
-            animation: none !important
-        }
-    }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="ПДД">
+<meta name="theme-color" content="#f3f5f9">
+<title>ПДД Прогресс</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><rect width=%2232%22 height=%2232%22 rx=%228%22 fill=%22%230b5fa5%22/><path d=%22M8 17l5 5 11-12%22 fill=%22none%22 stroke=%22white%22 stroke-width=%223.5%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22/></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{--bg:#f3f5f9;--card:#fff;--ink:#0e1726;--mute:#6a7587;--line:#e9edf3;--blue:#2563eb;--blue-s:#e8efff;--grn:#12935a;--org:#e0771a;--bar:#ffffff;--sh:0 1px 2px rgba(14,23,38,.04),0 8px 24px rgba(14,23,38,.06);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b0f15;--card:#141a23;--ink:#eef1f5;--mute:#8b96a6;--line:#232b37;--blue:#6ea0ff;--blue-s:#1a2640;--grn:#3fbf7a;--org:#f0a35c;--bar:#141a23;--sh:none;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0b0f15;--card:#141a23;--ink:#eef1f5;--mute:#8b96a6;--line:#232b37;--blue:#6ea0ff;--blue-s:#1a2640;--grn:#3fbf7a;--org:#f0a35c;--bar:#141a23;--sh:none;color-scheme:dark}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font:400 16px/1.45 Manrope,Roboto,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;-webkit-user-select:none;user-select:none;overscroll-behavior-y:none}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.app{max-width:560px;margin:0 auto;min-height:100vh;padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))}
+.screen{display:none}.screen.on{display:block;animation:fade .25s}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.pad{padding:0 16px}
+.top{padding:calc(22px + env(safe-area-inset-top,0px)) 20px 14px}
+.date{margin:0;color:var(--mute);font-size:14px;text-transform:capitalize}
+.top h1,.search h1{margin:2px 0 0;font-size:28px;font-weight:800;letter-spacing:-.5px}
+.hero{background:var(--card);border-radius:24px;box-shadow:var(--sh);margin:0 16px;padding:20px 20px 18px}
+.big{display:flex;align-items:baseline;gap:12px}
+.big b{font-size:64px;font-weight:800;line-height:1;letter-spacing:-2px}
+.big span{color:var(--mute);font-size:15px}
+.track{height:8px;border-radius:8px;background:var(--line);margin-top:14px;overflow:hidden}
+.track i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--blue),#7aa5ff);border-radius:8px;transition:width .9s cubic-bezier(.2,.8,.2,1)}
+.exam{margin:12px 0 0;color:var(--mute);font-size:14px}
+.cta{display:flex;align-items:center;gap:14px;width:calc(100% - 32px);margin:12px 16px 0;padding:16px 18px;border-radius:20px;background:var(--blue);color:#fff;text-align:left;box-shadow:0 10px 24px rgba(37,99,235,.28)}
+.cta[hidden]{display:none}
+.cta:active{transform:scale(.99)}
+.cta span{flex:1;min-width:0}.cta small{display:block;opacity:.8;font-size:13px}.cta b{display:block;font-weight:700;font-size:16px;line-height:1.3}
+.cta svg{width:22px;height:22px;flex:none;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 16px 0}
+.kpi{background:var(--card);border-radius:18px;padding:13px 14px;box-shadow:var(--sh)}
+.kpi b{display:block;font-size:22px;font-weight:800}.kpi span{font-size:12.5px;color:var(--mute)}
+h2{font-size:13px;font-weight:700;color:var(--mute);text-transform:uppercase;letter-spacing:.8px;margin:26px 4px 8px}
+.map{display:grid;grid-template-columns:repeat(11,1fr);gap:5px;background:var(--card);border-radius:20px;padding:14px;box-shadow:var(--sh)}
+.dot{aspect-ratio:1;border-radius:7px;background:var(--line);font-size:10px;font-weight:700;color:var(--mute);display:grid;place-items:center;padding:0}
+.dot::before{content:attr(data-n)}
+.dot.done{background:var(--grn);color:#fff}.dot.prog{background:var(--org);color:#fff}
+.legend{display:flex;gap:16px;margin:10px 4px 0;font-size:12.5px;color:var(--mute)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.card{background:var(--card);border-radius:20px;box-shadow:var(--sh);overflow:hidden}
+.row{display:flex;align-items:center;gap:14px;width:100%;padding:12px 14px;text-align:left;border-top:1px solid var(--line)}
+.row:first-child{border-top:0}
+.row:active{background:var(--blue-s)}
+.rg{--c:var(--mute);position:relative;flex:none;width:44px;height:44px;border-radius:50%;background:conic-gradient(var(--c) calc(var(--p)*1%),var(--line) 0);display:grid;place-items:center;font-size:12.5px;font-weight:800;color:var(--c)}
+.rg::before{content:"";position:absolute;inset:4px;border-radius:50%;background:var(--card)}
+.rg span{position:relative}
+.done .rg{--c:var(--grn)}.prog .rg{--c:var(--org)}
+.none .rg{color:var(--mute)}
+.tx{flex:1;min-width:0}.tx b{display:block;font-weight:600;font-size:15px;line-height:1.3}.tx small{color:var(--mute);font-size:13px}
+.chev{flex:none;width:18px;height:18px;fill:none;stroke:var(--mute);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;opacity:.6}
+.empty{padding:20px;color:var(--mute);font-size:14px;text-align:center}
+.search{position:sticky;top:0;z-index:5;background:var(--bg);padding:calc(22px + env(safe-area-inset-top,0px)) 16px 8px}
+.search h1{padding:0 4px}
+.search input{width:100%;margin-top:14px;padding:13px 16px;border-radius:16px;border:0;background:var(--card);box-shadow:var(--sh);color:var(--ink);font:inherit;font-size:16px;-webkit-user-select:text;user-select:text}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:12px 0 4px;scrollbar-width:none}.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;padding:8px 15px;border-radius:99px;background:var(--card);box-shadow:var(--sh);font-size:14px;font-weight:600;color:var(--mute)}
+.chip[aria-pressed=true]{background:var(--blue);color:#fff}
+.gt{display:flex;justify-content:space-between;align-items:baseline;margin:24px 4px 8px;font-weight:800;font-size:17px}
+.gt small{color:var(--mute);font-weight:500;font-size:13px}
+.week{display:flex;gap:10px;align-items:flex-end;height:140px;padding:16px}
+.col{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:5px;font-size:12px;color:var(--mute)}
+.col i{width:100%;max-width:26px;border-radius:8px;background:var(--blue);min-height:4px}.col.z i{background:var(--line)}
+.set{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-top:1px solid var(--line);gap:12px;font-size:15px;font-weight:500}
+.set:first-child{border-top:0}
+.set input[type=number],.set input[type=date]{padding:8px 10px;border-radius:10px;border:0;background:var(--bg);color:var(--ink);font:inherit;font-size:16px;width:140px;-webkit-user-select:text;user-select:text}
+.set input[type=number]{width:76px;text-align:center}
+.btn{padding:16px;border-radius:16px;background:var(--blue);color:#fff;font-weight:700;width:100%;font-size:16px}
+.ghost{background:var(--blue-s);color:var(--blue);padding:9px 14px;border-radius:12px;font-size:14px;font-weight:600;width:auto}
+.danger{color:#d33;background:#d3333314}
+.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--bar);padding:6px 10px calc(6px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--line)}
+.tabs{max-width:560px;margin:0 auto;display:flex}
+.tb{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:7px 0;font-size:12px;font-weight:600;color:var(--mute);border-radius:14px}
+.tb svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.tb[aria-selected=true]{color:var(--blue)}
+.ov{position:fixed;inset:0;background:rgba(5,10,16,.45);opacity:0;visibility:hidden;pointer-events:none;transition:opacity .25s,visibility .25s;z-index:30}.ov.on{opacity:1;visibility:visible;pointer-events:auto}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:31;background:var(--card);border-radius:28px 28px 0 0;padding:10px 20px calc(20px + env(safe-area-inset-bottom,0px));max-width:560px;margin:0 auto;transform:translateY(105%);transition:transform .3s cubic-bezier(.2,.8,.2,1);max-height:88vh;overflow-y:auto}
+.sheet.on{transform:none}
+.grab{width:40px;height:5px;border-radius:9px;background:var(--line);margin:0 auto 16px;display:block;padding:0}
+.sheet h3{margin:0 0 2px;font-size:18px;font-weight:800;line-height:1.3}.sheet p{margin:0;color:var(--mute);font-size:14px}
+.step{display:flex;align-items:center;justify-content:center;gap:16px;margin:20px 0 6px}
+.step button{width:56px;height:56px;border-radius:50%;background:var(--blue-s);color:var(--blue);font-size:28px;font-weight:700;line-height:1}
+.step input{width:110px;text-align:center;font-size:54px;font-weight:800;border:0;background:none;color:var(--ink);font-family:inherit;-webkit-user-select:text;user-select:text}
+.live{text-align:center;font-size:15px;font-weight:600;color:var(--org);margin-bottom:14px}.live.ok{color:var(--grn)}
+.qk{display:flex;gap:8px;justify-content:center;margin-bottom:18px;flex-wrap:wrap}
+.hist{list-style:none;margin:16px 0 0;padding:0;font-size:14px;color:var(--mute)}
+.hist li{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line)}.hist b{color:var(--ink);font-weight:600}
+.toast{position:fixed;left:50%;bottom:calc(92px + env(safe-area-inset-bottom,0px));transform:translate(-50%,16px);background:var(--ink);color:var(--bg);padding:12px 20px;border-radius:99px;font-size:14px;font-weight:600;opacity:0;pointer-events:none;transition:.3s;z-index:40;max-width:90vw;text-align:center}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
 </head>
 <body>
-    <div class="app">
-        <section class="screen on" id="s-home">
-            <div class="hero">
-                <div class="hrow">
-                    <div>
-                        <h1>Привет! 👋</h1>
-                        <small id="greet"></small>
-                    </div>
-                    <div class="pill" id="examPill" hidden></div>
-                </div>
-                <div class="ring">
-                    <svg viewBox="0 0 120 120" aria-hidden="true">
-                        <circle class="bg" cx="60" cy="60" r="52"/>
-                        <circle class="fg" id="ringFg" cx="60" cy="60" r="52"/>
-                    </svg>
-                    <div class="n">
-                        <b id="pctAll">0%</b>
-                        <span>готова к экзамену</span>
-                    </div>
-                </div>
-                <p class="sub" id="subAll"></p>
-            </div>
-            <div class="kpis">
-                <div class="kpi">
-                    <b id="kAvg">—</b>
-                    <span>средний</span>
-                </div>
-                <div class="kpi">
-                    <b id="kAtt">0</b>
-                    <span>попыток</span>
-                </div>
-                <div class="kpi">
-                    <b id="kDays">0🔥</b>
-                    <span>дней подряд</span>
-                </div>
-            </div>
-            <div class="pad">
-                <h2>Что повторить</h2>
-                <div class="card" id="weak"></div>
-                <h2>Недавнее</h2>
-                <div class="card" id="recent"></div>
-            </div>
-        </section>
+<div class="app">
+ <section class="screen on" id="s-home">
+  <div class="top"><p class="date" id="greet"></p><h1>Готовность к экзамену</h1></div>
+  <div class="hero">
+   <div class="big"><b id="pctAll">0%</b><span id="subAll"></span></div>
+   <div class="track"><i id="barFg"></i></div>
+   <p class="exam" id="examLine"></p>
+  </div>
+  <button class="cta" id="cta" data-cat="1"><span><small id="ctaS"></small><b id="ctaT"></b></span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+  <div class="stats"><div class="kpi"><b id="kAvg">—</b><span>средний</span></div><div class="kpi"><b id="kAtt">0</b><span>попыток</span></div><div class="kpi"><b id="kDays">0</b><span>дней подряд</span></div></div>
+  <div class="pad">
+   <h2>Все темы</h2><div class="map" id="map"></div>
+   <div class="legend"><span><i style="background:var(--grn)"></i>Освоено</span><span><i style="background:var(--org)"></i>В процессе</span><span><i style="background:var(--line)"></i>Не начато</span></div>
+   <h2>Что повторить</h2><div class="card" id="weak"></div>
+   <h2>Недавнее</h2><div class="card" id="recent"></div>
+  </div>
+ </section>
 
-        <section class="screen" id="s-topics">
-            <div class="search">
-                <h1>Темы</h1>
-                <input type="search" id="q" placeholder="Поиск по названию или номеру" aria-label="Поиск">
-                <div class="chips" id="chips"></div>
-            </div>
-            <div class="pad" id="groups"></div>
-        </section>
+ <section class="screen" id="s-topics">
+  <div class="search"><h1>Темы</h1><input type="search" id="q" placeholder="Поиск по названию или номеру" aria-label="Поиск"><div class="chips" id="chips"></div></div>
+  <div class="pad" id="groups"></div>
+ </section>
 
-        <section class="screen" id="s-stats">
-            <div class="search">
-                <h1>Статистика</h1>
-            </div>
-            <div class="pad" style="padding-top:0">
-                <h2 style="margin-top:6px">Попытки за неделю</h2>
-                <div class="card week" id="week"></div>
-                <h2>Настройки</h2>
-                <div class="card">
-                    <div class="set">
-                        <span>Цель для «освоено», %</span>
-                        <input type="number" id="target" min="50" max="100" inputmode="numeric">
-                    </div>
-                    <div class="set">
-                        <span>Дата экзамена</span>
-                        <input type="date" id="examDate">
-                    </div>
-                    <div class="set">
-                        <span>Тёмная тема</span>
-                        <button class="ghost" id="theme">Переключить</button>
-                    </div>
-                    <div class="set">
-                        <span>Список результатов</span>
-                        <button class="ghost" id="exp">Копировать</button>
-                    </div>
-                    <div class="set">
-                        <span>Весь прогресс</span>
-                        <button class="ghost danger" id="reset">Сбросить</button>
-                    </div>
-                </div>
-                <p class="empty">Данные хранятся в этом браузере. Чтобы поставить на экран телефона: меню браузера → «Добавить на главный экран».</p>
-            </div>
-        </section>
-    </div>
+ <section class="screen" id="s-stats">
+  <div class="search"><h1>Статистика</h1></div>
+  <div class="pad" style="padding-top:0">
+   <h2 style="margin-top:6px">Попытки за неделю</h2><div class="card week" id="week"></div>
+   <h2>Настройки</h2>
+   <div class="card">
+    <div class="set"><span>Цель для «освоено», %</span><input type="number" id="target" min="50" max="100" inputmode="numeric"></div>
+    <div class="set"><span>Дата экзамена</span><input type="date" id="examDate"></div>
+    <div class="set"><span>Тёмная тема</span><button class="ghost" id="theme">Переключить</button></div>
+    <div class="set"><span>Список результатов</span><button class="ghost" id="exp">Копировать</button></div>
+    <div class="set"><span>Весь прогресс</span><button class="ghost danger" id="reset">Сбросить</button></div>
+   </div>
+   <p class="empty">Данные хранятся в этом браузере. Чтобы поставить на экран телефона: меню браузера → «Добавить на главный экран».</p>
+  </div>
+ </section>
+</div>
 
-    <nav class="tabbar">
-        <div class="tabs" role="tablist">
-            <button class="tb" role="tab" data-go="home" aria-selected="true">
-                <span>🏠</span>
-                Главная
-            </button>
-            <button class="tb" role="tab" data-go="topics" aria-selected="false">
-                <span>📚</span>
-                Темы
-            </button>
-            <button class="tb" role="tab" data-go="stats" aria-selected="false">
-                <span>📊</span>
-                Статистика
-            </button>
-        </div>
-    </nav>
+<nav class="tabbar"><div class="tabs" role="tablist">
+ <button class="tb" role="tab" data-go="home" aria-selected="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11l8-7 8 7"/><path d="M6 10v10h12V10"/></svg>Главная</button>
+ <button class="tb" role="tab" data-go="topics" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M5 12h14M5 17h14"/></svg>Темы</button>
+ <button class="tb" role="tab" data-go="stats" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V11M12 20V5M19 20v-6"/></svg>Статистика</button>
+</div></nav>
 
-    <div class="ov" id="ov"></div>
-    <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="shT">
-        <button class="grab" id="grab" aria-label="Закрыть"></button>
-        <h3 id="shT"></h3>
-        <p id="shS"></p>
-        <div class="step">
-            <button id="minus" aria-label="Меньше">−</button>
-            <input id="val" type="number" inputmode="numeric" aria-label="Верных ответов">
-            <button id="plus" aria-label="Больше">+</button>
-        </div>
-        <div class="live" id="live"></div>
-        <div class="qk" id="qk"></div>
-        <button class="btn" id="save">Сохранить результат</button>
-        <ul class="hist" id="hist"></ul>
-        <button class="ghost" id="undo" style="margin-top:12px" hidden>Удалить последнюю попытку</button>
-    </div>
-    <div class="toast" id="toast" role="status"></div>
+<div class="ov" id="ov"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="shT">
+ <button class="grab" id="grab" aria-label="Закрыть"></button>
+ <h3 id="shT"></h3><p id="shS"></p>
+ <div class="step"><button id="minus" aria-label="Меньше">−</button><input id="val" type="number" inputmode="numeric" aria-label="Верных ответов"><button id="plus" aria-label="Больше">+</button></div>
+ <div class="live" id="live"></div>
+ <div class="qk" id="qk"></div>
+ <button class="btn" id="save">Сохранить результат</button>
+ <ul class="hist" id="hist"></ul>
+ <button class="ghost" id="undo" style="margin-top:12px" hidden>Удалить последнюю попытку</button>
+</div>
+<div class="toast" id="toast" role="status"></div>
 
-    <script>
-    const RAW = `Жалпы ережелер|35
+<script>
+const RAW=`Жалпы ережелер|35
 Жүргізушілердің жалпы міндеттері|23
 Жаяу жүргіншілердің міндеттері|5
 Жолаушылардың міндеттері|3
@@ -920,378 +216,112 @@
 Тоқтату және тұрақ|1
 Қиылыстардан өту|56
 Бағдаршам және реттеуші сигналдары|1
-Емтихан (40 кездейсоқ сұрақ)|40`
+Емтихан (40 кездейсоқ сұрақ)|40`;
+const CATS=RAW.split("\n").map((s,i)=>{const [n,c]=s.split("|");return{id:i+1,name:n,total:+c}});
+const GROUPS=[["Общие положения",[1,2,3,4,43]],["Дорожные знаки",[5,6,7,8,9,10,11,12,50]],["Светофор и сигналы",[13,14,15,16,17,54]],["Манёвры и скорость",[18,19,20,21,22,23,51]],["Остановка и стоянка",[24,25,26,52]],["Перекрёстки",[27,28,29,30,31,53]],["Особые условия",[32,33,34,35,36,37,38,39,40,41]],["Допуск, медицина, ӨҚБҚ",[42,44,45,46,47,48,49]],["Экзамен",[55]]];
+const KEY="pdd-progress-v1";
+let S={target:90,exam:"",att:{}};
+try{const r=localStorage.getItem(KEY);if(r)S=Object.assign(S,JSON.parse(r))}catch(e){}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+let filter="all",query="",cur=null;
+const $=id=>document.getElementById(id);
+const dk=d=>{const x=new Date(d);return x.getFullYear()+"-"+(x.getMonth()+1)+"-"+x.getDate()};
+const fmt=ts=>new Date(ts).toLocaleDateString("ru-RU",{day:"numeric",month:"short"});
+const buzz=n=>{try{navigator.vibrate&&navigator.vibrate(n)}catch(e){}};
+let tt;function toast(m){const t=$("toast");t.textContent=m;t.classList.add("on");clearTimeout(tt);tt=setTimeout(()=>t.classList.remove("on"),2200)}
+function info(c){const a=S.att[c.id]||[];if(!a.length)return{st:"none",p:0,last:null,n:0};const l=a[a.length-1],p=Math.round(l.c/c.total*100);return{st:p>=S.target?"done":"prog",p,last:l,n:a.length}}
+function row(c,extra){const i=info(c);return`<button class="row ${i.st}" data-cat="${c.id}"><span class="rg" style="--p:${i.p}"><span>${i.last?i.p+"%":c.id}</span></span><span class="tx"><b>${c.name}</b><small>${extra||(i.last?`${i.last.c} из ${c.total} · попыток: ${i.n}`:`${c.total} вопросов · не начато`)}</small></span><svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>`}
+function home(){
+ const inf=CATS.map(info),done=inf.filter(x=>x.st==="done").length,st=inf.filter(x=>x.n),pct=Math.round(done/CATS.length*100);
+ $("pctAll").textContent=pct+"%";$("barFg").style.width=pct+"%";
+ $("subAll").textContent=`Освоено ${done} из ${CATS.length} тем`;
+ $("greet").textContent=new Date().toLocaleDateString("ru-RU",{weekday:"long",day:"numeric",month:"long"});
+ $("kAvg").textContent=st.length?Math.round(st.reduce((s,x)=>s+x.p,0)/st.length)+"%":"—";
+ const all=Object.entries(S.att).flatMap(([id,a])=>a.map(x=>({...x,id:+id})));
+ $("kAtt").textContent=all.length;
+ const days=new Set(all.map(a=>dk(a.d)));let k=0,d=new Date();if(!days.has(dk(d)))d.setDate(d.getDate()-1);while(days.has(dk(d))){k++;d.setDate(d.getDate()-1)}
+ $("kDays").textContent=k;
+ const ex=$("examLine");
+ if(S.exam){const n=Math.ceil((new Date(S.exam+"T00:00")-new Date().setHours(0,0,0,0))/864e5);ex.textContent=n>0?`До экзамена ${n} дн.`:n===0?"Экзамен сегодня":""}else ex.textContent="Укажи дату экзамена в разделе «Статистика»"
+ let w=CATS.map(c=>({c,i:info(c)})).filter(x=>x.i.st==="prog").sort((a,b)=>a.i.p-b.i.p).slice(0,4);
+ let wh=w.map(x=>row(x.c)).join("");
+ if(!wh){const nx=CATS.filter(c=>!info(c).n).slice(0,3);wh=nx.length?nx.map(c=>row(c,"Начни с этой темы")).join(""):'<div class="empty">Всё освоено, отличная работа!</div>'}
+ $("weak").innerHTML=wh;
+ const rc=all.sort((a,b)=>b.d-a.d).slice(0,5);
+ $("recent").innerHTML=rc.length?rc.map(x=>{const c=CATS[x.id-1],p=Math.round(x.c/c.total*100);return`<button class="row ${p>=S.target?"done":"prog"}" data-cat="${c.id}"><span class="rg" style="--p:${p}"><span>${p}%</span></span><span class="tx"><b>${c.name}</b><small>${fmt(x.d)} · ${x.c} из ${c.total}</small></span><svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>`}).join(""):'<div class="empty">Пока нет результатов. Открой «Темы» и запиши первый тест.</div>';
+}
+function extra(){
+ const w=CATS.map(c=>({c,i:info(c)})).filter(x=>x.i.st==="prog").sort((a,b)=>a.i.p-b.i.p)[0];
+ const nx=w?w.c:CATS.find(c=>!info(c).n),b=$("cta");
+ if(nx){b.hidden=false;b.dataset.cat=nx.id;$("ctaT").textContent=nx.name;$("ctaS").textContent=w?`Повторить · сейчас ${w.i.p}%`:"Следующая тема"}else b.hidden=true;
+ $("map").innerHTML=CATS.map(c=>{const i=info(c);return`<button class="dot ${i.st}" data-n="${c.id}" data-cat="${c.id}" aria-label="${c.id}. ${c.name}"></button>`}).join("");
+}
+function topics(){
+ const inf=CATS.map(info),n=s=>inf.filter(x=>x.st===s).length;
+ const T=[["all","Все",CATS.length],["none","Не начато",n("none")],["prog","В процессе",n("prog")],["done","Освоено",n("done")]];
+ $("chips").innerHTML=T.map(t=>`<button class="chip" data-f="${t[0]}" aria-pressed="${filter===t[0]}">${t[1]} ${t[2]}</button>`).join("");
+ const q=query.trim().toLowerCase();let h="";
+ for(const [name,ids] of GROUPS){
+  const all=ids.map(id=>CATS[id-1]),rows=all.filter(c=>{const i=info(c);return(filter==="all"||i.st===filter)&&(!q||c.name.toLowerCase().includes(q)||String(c.id)===q)});
+  if(!rows.length)continue;
+  h+=`<div class="gt"><span>${name}</span><small>${all.filter(c=>info(c).st==="done").length} из ${all.length}</small></div><div class="card">${rows.map(c=>row(c)).join("")}</div>`;
+ }
+ $("groups").innerHTML=h||'<div class="empty">Ничего не найдено</div>';
+}
+function stats(){
+ const all=Object.values(S.att).flat(),out=[];
+ for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);out.push({d,n:all.filter(a=>dk(a.d)===dk(d)).length})}
+ const mx=Math.max(1,...out.map(o=>o.n));
+ $("week").innerHTML=out.map(o=>`<div class="col ${o.n?"":"z"}">${o.n||""}<i style="height:${o.n/mx*70}%"></i>${o.d.toLocaleDateString("ru-RU",{weekday:"short"})}</div>`).join("");
+ $("target").value=S.target;$("examDate").value=S.exam;
+}
+function render(){home();extra();topics();stats()}
 
+function go(n){document.querySelectorAll(".screen").forEach(s=>s.classList.toggle("on",s.id==="s-"+n));document.querySelectorAll(".tb").forEach(b=>b.setAttribute("aria-selected",b.dataset.go===n));window.scrollTo(0,0)}
+document.querySelector(".tabs").addEventListener("click",e=>{const b=e.target.closest("[data-go]");if(b){buzz(8);go(b.dataset.go)}});
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    ;
-    const CATS = RAW.split("\n").map((s, i) => {
-        const [n, c] = s.split("|");
-        return {
-            id: i + 1,
-            name: n,
-            total: +c
-        }
-    });
-    const GROUPS = [["🚦 Общие положения", [1, 2, 3, 4, 43]], ["🪧 Дорожные знаки", [5, 6, 7, 8, 9, 10, 11, 12, 50]], ["🚥 Светофор и сигналы", [13, 14, 15, 16, 17, 54]], ["↩️ Манёвры и скорость", [18, 19, 20, 21, 22, 23, 51]], ["🅿️ Остановка и стоянка", [24, 25, 26, 52]], ["✖️ Перекрёстки", [27, 28, 29, 30, 31, 53]], ["🛣️ Особые условия", [32, 33, 34, 35, 36, 37, 38, 39, 40, 41]], ["🩺 Допуск, медицина, ӨҚБҚ", [42, 44, 45, 46, 47, 48, 49]], ["📝 Экзамен", [55]]];
-    const KEY = "pdd-progress-v1";
-    let S = {
-        target: 90,
-        exam: "",
-        att: {}
-    };
-    try {
-        const r = localStorage.getItem(KEY);
-        if (r)
-            S = Object.assign(S, JSON.parse(r))
-    } catch (e) {}
-    const save = () => {
-        try {
-            localStorage.setItem(KEY, JSON.stringify(S))
-        } catch (e) {}
-    };
-    let filter = "all",
-        query = "",
-        cur = null;
-    const $ = id => document.getElementById(id);
-    const dk = d => {
-        const x = new Date(d);
-        return x.getFullYear() + "-" + (x.getMonth() + 1) + "-" + x.getDate()
-    };
-    const fmt = ts => new Date(ts).toLocaleDateString("ru-RU", {
-        day: "numeric",
-        month: "short"
-    });
-    const buzz = n => {
-        try {
-            navigator.vibrate && navigator.vibrate(n)
-        } catch (e) {}
-    };
-    let tt;
-    function toast(m) {
-        const t = $("toast");
-        t.textContent = m;
-        t.classList.add("on");
-        clearTimeout(tt);
-        tt = setTimeout(() => t.classList.remove("on"), 2200)
-    }
-    function info(c) {
-        const a = S.att[c.id] || [];
-        if (!a.length)
-            return {
-                st: "none",
-                p: 0,
-                last: null,
-                n: 0
-            };
-        const l = a[a.length - 1],
-            p = Math.round(l.c / c.total * 100);
-        return {
-            st: p >= S.target ? "done" : "prog",
-            p,
-            last: l,
-            n: a.length
-        }
-    }
-    function row(c, extra) {
-        const i = info(c);
-        return `<button class="row ${i.st}" data-cat="${c.id}"><span class="no">${c.id}</span><span class="tx"><b>${c.name}</b><small>${extra || (i.last ? `${i.last.c} из ${c.total} · попыток: ${i.n}` : `${c.total} вопросов · не начато`)}</small></span><span class="pc">${i.last ? i.p + "%" : "›"}</span></button><div class="mini ${i.st}"><i style="width:${i.p}%"></i></div>`
-    }
-    function home() {
-        const inf = CATS.map(info),
-            done = inf.filter(x => x.st === "done").length,
-            st = inf.filter(x => x.n),
-            pct = Math.round(done / CATS.length * 100);
-        $("pctAll").textContent = pct + "%";
-        $("ringFg").style.strokeDashoffset = 326.7 * (1 - pct / 100);
-        $("subAll").textContent = `Освоено ${done} из ${CATS.length} тем`;
-        $("greet").textContent = new Date().toLocaleDateString("ru-RU", {
-            weekday: "long",
-            day: "numeric",
-            month: "long"
-        });
-        $("kAvg").textContent = st.length ? Math.round(st.reduce((s, x) => s + x.p, 0) / st.length) + "%" : "—";
-        const all = Object.entries(S.att).flatMap(([id, a]) => a.map(x => ({
-            ...x,
-            id: +id
-        })));
-        $("kAtt").textContent = all.length;
-        const days = new Set(all.map(a => dk(a.d)));
-        let k = 0,
-            d = new Date();
-        if (!days.has(dk(d)))
-            d.setDate(d.getDate() - 1);
-        while (days.has(dk(d))) {
-            k++;
-            d.setDate(d.getDate() - 1)
-        }
-        $("kDays").textContent = k + "🔥";
-        const ep = $("examPill");
-        if (S.exam) {
-            const n = Math.ceil((new Date(S.exam + "T00:00") - new Date().setHours(0, 0, 0, 0)) / 864e5);
-            ep.hidden = n < 0;
-            ep.textContent = n > 0 ? `🏁 ${n} дн.` : "🏁 сегодня"
-        } else
-            ep.hidden = true;
-        let w = CATS.map(c => ({
-            c,
-            i: info(c)
-        })).filter(x => x.i.st === "prog").sort((a, b) => a.i.p - b.i.p).slice(0, 4);
-        let wh = w.map(x => row(x.c)).join("");
-        if (!wh) {
-            const nx = CATS.filter(c => !info(c).n).slice(0, 3);
-            wh = nx.length ? nx.map(c => row(c, "Начни с этой темы")).join("") : '<div class="empty">Всё освоено, отличная работа! 🎉</div>'
-        }
-        $("weak").innerHTML = wh;
-        const rc = all.sort((a, b) => b.d - a.d).slice(0, 5);
-        $("recent").innerHTML = rc.length ? rc.map(x => {
-            const c = CATS[x.id - 1],
-                p = Math.round(x.c / c.total * 100);
-            return `<button class="row ${p >= S.target ? "done" : "prog"}" data-cat="${c.id}"><span class="no">${c.id}</span><span class="tx"><b>${c.name}</b><small>${fmt(x.d)} · ${x.c} из ${c.total}</small></span><span class="pc">${p}%</span></button>`
-        }).join("") : '<div class="empty">Пока нет результатов. Открой «Темы» и запиши первый тест.</div>';
-    }
-    function topics() {
-        const inf = CATS.map(info),
-            n = s => inf.filter(x => x.st === s).length;
-        const T = [["all", "Все", CATS.length], ["none", "Не начато", n("none")], ["prog", "В процессе", n("prog")], ["done", "Освоено", n("done")]];
-        $("chips").innerHTML = T.map(t => `<button class="chip" data-f="${t[0]}" aria-pressed="${filter === t[0]}">${t[1]} ${t[2]}</button>`).join("");
-        const q = query.trim().toLowerCase();
-        let h = "";
-        for (const [name, ids] of GROUPS) {
-            const all = ids.map(id => CATS[id - 1]),
-                rows = all.filter(c => {
-                    const i = info(c);
-                    return (filter === "all" || i.st === filter) && (!q || c.name.toLowerCase().includes(q) || String(c.id) === q)
-                });
-            if (!rows.length)
-                continue;
-            h += `<div class="gt"><span>${name}</span><small>${all.filter(c => info(c).st === "done").length} из ${all.length}</small></div><div class="card">${rows.map(c => row(c)).join("")}</div>`;
-        }
-        $("groups").innerHTML = h || '<div class="empty">Ничего не найдено</div>';
-    }
-    function stats() {
-        const all = Object.values(S.att).flat(),
-            out = [];
-        for (let i = 6; i >= 0; i--) {
-            const d = new Date();
-            d.setDate(d.getDate() - i);
-            out.push({
-                d,
-                n: all.filter(a => dk(a.d) === dk(d)).length
-            })
-        }
-        const mx = Math.max(1, ...out.map(o => o.n));
-        $("week").innerHTML = out.map(o => `<div class="col ${o.n ? "" : "z"}">${o.n || ""}<i style="height:${o.n / mx * 70}%"></i>${o.d.toLocaleDateString("ru-RU", {weekday: "short"})}</div>`).join("");
-        $("target").value = S.target;
-        $("examDate").value = S.exam;
-    }
-    function render() {
-        home();
-        topics();
-        stats()
-    }
-
-    function go(n) {
-        document.querySelectorAll(".screen").forEach(s => s.classList.toggle("on", s.id === "s-" + n));
-        document.querySelectorAll(".tb").forEach(b => b.setAttribute("aria-selected", b.dataset.go === n));
-        window.scrollTo(0, 0)
-    }
-    document.querySelector(".tabs").addEventListener("click", e => {
-        const b = e.target.closest("[data-go]");
-        if (b) {
-            buzz(8);
-            go(b.dataset.go)
-        }
-    });
-
-    function openSheet(id) {
-        cur = CATS[id - 1];
-        const i = info(cur);
-        $("shT").textContent = cur.id + ". " + cur.name;
-        $("shS").textContent = `${cur.total} вопросов`;
-        $("val").max = cur.total;
-        $("val").value = i.last ? i.last.c : Math.round(cur.total * .8);
-        $("qk").innerHTML = [0, 1, 2, 3].filter(m => m <= cur.total).map(m => `<button class="ghost" data-miss="${m}">${m ? m + " " + (m === 1 ? "ошибка" : m < 5 ? "ошибки" : "ошибок") : "Без ошибок"}</button>`).join("");
-        const a = (S.att[cur.id] || []).slice().reverse().slice(0, 5);
-        $("hist").innerHTML = a.map(x => `<li><span>${fmt(x.d)}</span><span><b>${x.c} из ${cur.total}</b> · ${Math.round(x.c / cur.total * 100)}%</span></li>`).join("");
-        $("undo").hidden = !a.length;
-        live();
-        $("ov").classList.add("on");
-        $("sheet").classList.add("on");
-    }
-    function closeSheet() {
-        $("ov").classList.remove("on");
-        $("sheet").classList.remove("on");
-        cur = null
-    }
-    function live() {
-        let v = parseInt($("val").value, 10);
-        if (isNaN(v))
-            v = 0;
-        v = Math.max(0, Math.min(cur.total, v));
-        const p = Math.round(v / cur.total * 100),
-            l = $("live");
-        l.textContent = `${p}% · ` + (p >= S.target ? "освоено 🎉" : `до цели ещё ${Math.max(0, Math.ceil(S.target * cur.total / 100) - v)}`);
-        l.classList.toggle("ok", p >= S.target);
-    }
-    function setVal(v) {
-        v = Math.max(0, Math.min(cur.total, v));
-        $("val").value = v;
-        live();
-        buzz(6)
-    }
-    document.body.addEventListener("click", e => {
-        const c = e.target.closest("[data-cat]");
-        if (c) {
-            buzz(8);
-            openSheet(+c.dataset.cat)
-        }
-        const f = e.target.closest("[data-f]");
-        if (f) {
-            filter = f.dataset.f;
-            topics()
-        }
-        const m = e.target.closest("[data-miss]");
-        if (m && cur)
-            setVal(cur.total - (+m.dataset.miss));
-    });
-    $("minus").onclick = () => setVal((parseInt($("val").value, 10) || 0) - 1);
-    $("plus").onclick = () => setVal((parseInt($("val").value, 10) || 0) + 1);
-    $("val").addEventListener("input", () => cur && live());
-    $("ov").onclick = closeSheet;
-    $("grab").onclick = closeSheet;
-    document.addEventListener("keydown", e => {
-        if (e.key === "Escape")
-            closeSheet()
-    });
-    $("save").onclick = () => {
-        let v = parseInt($("val").value, 10);
-        if (isNaN(v) || v < 0 || v > cur.total) {
-            toast(`Введи число от 0 до ${cur.total}`);
-            return
-        }
-        (S.att[cur.id] = S.att[cur.id] || []).push({
-            c: v,
-            d: Date.now()
-        });
-        save();
-        const p = Math.round(v / cur.total * 100);
-        closeSheet();
-        render();
-        buzz(p >= S.target ? [20, 40, 20] : 15);
-        toast(p >= S.target ? `Тема освоена! ${v} из ${cur.total} 🎉` : `Сохранено: ${p}%. Так держать!`);
-    };
-    $("undo").onclick = () => {
-        const id = cur.id;
-        S.att[id].pop();
-        if (!S.att[id].length)
-            delete S.att[id];
-        save();
-        closeSheet();
-        render();
-        toast("Попытка удалена")
-    };
-    $("q").addEventListener("input", e => {
-        query = e.target.value;
-        topics()
-    });
-    $("target").addEventListener("change", e => {
-        let v = parseInt(e.target.value, 10);
-        if (isNaN(v))
-            v = 90;
-        S.target = Math.min(100, Math.max(50, v));
-        save();
-        render()
-    });
-    $("examDate").addEventListener("change", e => {
-        S.exam = e.target.value;
-        save();
-        home()
-    });
-    $("theme").onclick = () => {
-        const r = document.documentElement,
-            d = r.dataset.theme ? r.dataset.theme === "dark" : matchMedia("(prefers-color-scheme:dark)").matches;
-        r.dataset.theme = d ? "light" : "dark";
-        try {
-            localStorage.setItem(KEY + "-theme", r.dataset.theme)
-        } catch (e) {}
-    };
-    try {
-        const t = localStorage.getItem(KEY + "-theme");
-        if (t)
-            document.documentElement.dataset.theme = t
-    } catch (e) {}
-    $("reset").onclick = () => {
-        if (confirm("Удалить весь прогресс? Это нельзя отменить.")) {
-            S.att = {};
-            save();
-            render();
-            toast("Прогресс сброшен")
-        }
-    };
-    $("exp").onclick = async () => {
-        const t = CATS.map(c => {
-            const i = info(c);
-            return `${c.id}. ${c.name}: ${i.last ? i.last.c + "/" + c.total + " (" + i.p + "%)" : "не начато"}`
-        }).join("\n");
-        try {
-            await navigator.clipboard.writeText(t);
-            toast("Скопировано")
-        } catch (e) {
-            toast("Не удалось скопировать")
-        }
-    };
-    render();
-    </script>
+function openSheet(id){
+ cur=CATS[id-1];const i=info(cur);
+ $("shT").textContent=cur.id+". "+cur.name;$("shS").textContent=`${cur.total} вопросов`;
+ $("val").max=cur.total;$("val").value=i.last?i.last.c:Math.round(cur.total*.8);
+ $("qk").innerHTML=[0,1,2,3].filter(m=>m<=cur.total).map(m=>`<button class="ghost" data-miss="${m}">${m?m+" "+(m===1?"ошибка":m<5?"ошибки":"ошибок"):"Без ошибок"}</button>`).join("");
+ const a=(S.att[cur.id]||[]).slice().reverse().slice(0,5);
+ $("hist").innerHTML=a.map(x=>`<li><span>${fmt(x.d)}</span><span><b>${x.c} из ${cur.total}</b> · ${Math.round(x.c/cur.total*100)}%</span></li>`).join("");
+ $("undo").hidden=!a.length;live();
+ $("ov").classList.add("on");$("sheet").classList.add("on");
+}
+function closeSheet(){$("ov").classList.remove("on");$("sheet").classList.remove("on");cur=null}
+function live(){
+ let v=parseInt($("val").value,10);if(isNaN(v))v=0;v=Math.max(0,Math.min(cur.total,v));
+ const p=Math.round(v/cur.total*100),l=$("live");
+ l.textContent=`${p}% · `+(p>=S.target?"освоено":`до цели ещё ${Math.max(0,Math.ceil(S.target*cur.total/100)-v)}`);l.classList.toggle("ok",p>=S.target);
+}
+function setVal(v){v=Math.max(0,Math.min(cur.total,v));$("val").value=v;live();buzz(6)}
+document.body.addEventListener("click",e=>{
+ const c=e.target.closest("[data-cat]");if(c){buzz(8);openSheet(+c.dataset.cat)}
+ const f=e.target.closest("[data-f]");if(f){filter=f.dataset.f;topics()}
+ const m=e.target.closest("[data-miss]");if(m&&cur)setVal(cur.total-(+m.dataset.miss));
+});
+$("minus").onclick=()=>setVal((parseInt($("val").value,10)||0)-1);
+$("plus").onclick=()=>setVal((parseInt($("val").value,10)||0)+1);
+$("val").addEventListener("input",()=>cur&&live());
+$("ov").onclick=closeSheet;$("grab").onclick=closeSheet;
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeSheet()});
+$("save").onclick=()=>{
+ let v=parseInt($("val").value,10);if(isNaN(v)||v<0||v>cur.total){toast(`Введи число от 0 до ${cur.total}`);return}
+ (S.att[cur.id]=S.att[cur.id]||[]).push({c:v,d:Date.now()});save();
+ const p=Math.round(v/cur.total*100);closeSheet();render();buzz(p>=S.target?[20,40,20]:15);
+ toast(p>=S.target?`Тема освоена! ${v} из ${cur.total}`:`Сохранено: ${p}%. Так держать!`);
+};
+$("undo").onclick=()=>{const id=cur.id;S.att[id].pop();if(!S.att[id].length)delete S.att[id];save();closeSheet();render();toast("Попытка удалена")};
+$("q").addEventListener("input",e=>{query=e.target.value;topics()});
+$("target").addEventListener("change",e=>{let v=parseInt(e.target.value,10);if(isNaN(v))v=90;S.target=Math.min(100,Math.max(50,v));save();render()});
+$("examDate").addEventListener("change",e=>{S.exam=e.target.value;save();home()});
+$("theme").onclick=()=>{const r=document.documentElement,d=r.dataset.theme?r.dataset.theme==="dark":matchMedia("(prefers-color-scheme:dark)").matches;r.dataset.theme=d?"light":"dark";try{localStorage.setItem(KEY+"-theme",r.dataset.theme)}catch(e){}};
+try{const t=localStorage.getItem(KEY+"-theme");if(t)document.documentElement.dataset.theme=t}catch(e){}
+$("reset").onclick=()=>{if(confirm("Удалить весь прогресс? Это нельзя отменить.")){S.att={};save();render();toast("Прогресс сброшен")}};
+$("exp").onclick=async()=>{const t=CATS.map(c=>{const i=info(c);return`${c.id}. ${c.name}: ${i.last?i.last.c+"/"+c.total+" ("+i.p+"%)":"не начато"}`}).join("\n");try{await navigator.clipboard.writeText(t);toast("Скопировано")}catch(e){toast("Не удалось скопировать")}};
+render();
+</script>
 </body>
 </html>
